@@ -21,7 +21,7 @@ class HrtFrame {
   String _body = "";
   String checkSum = "";
 
-  HrtFrame(String? frame) {
+  HrtFrame([String? frame]) {
     if (frame != null) {
       extractFrame(frame);
     }

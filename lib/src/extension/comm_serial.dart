@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 
-class CommResource {
+class CommSerial {
   SerialPort? sp;
 
   bool openSerial(String port,
@@ -48,12 +48,12 @@ class CommResource {
     return Uint8List(0);
   }
 
-  bool writeSerial(List<dynamic> write) {
+  bool writeSerial(Uint8List write) {
     int tam = 0;
     if (sp != null) {
       if (sp!.isOpen) {
         if (write.isNotEmpty) {
-          tam = sp!.write(Uint8List.fromList(List<int>.from(write)));
+          tam = sp!.write(write);
         }
         if (tam >= write.length) return true;
       }

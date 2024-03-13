@@ -1,49 +1,31 @@
 import 'dart:typed_data';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:hctvirtual/src/extension/comm_serial.dart';
 
 class HrtComm {
-  late SerialPort _port;
-  late Uint8List _data;
-  String _device = "";
-  HrtComm([SerialPort? port]) {
+  final commSerial = CommSerial();
+  HrtComm(String? port) {
     if (port != null) {
-      _port = port;
+      connect(port);
     }
-  }
-
-  List<String> get getDevices => SerialPort.availablePorts;
-  Stream<Uint8List> get onRead => SerialPortReader(_port).stream;
-
-  bool get hasData {
-    _data.addAll(_port.read(_port.bytesAvailable));
-    return true;
   }
 
   String readFrame() {
-    return _port
-        .read(_port.bytesAvailable)
-        .map((e) => e.toRadixString(16))
-        .reduce((value, element) => '$value $element');
+    final resp =
+        commSerial.readSerial().map((e) => e.toRadixString(16)).toString();
+    return resp;
   }
 
-  int write(String data) {
-    return _port.write(Uint8List.fromList(data.codeUnits));
+  bool writeFrame(String data) {
+    final resp = data.split('').map((e) => int.parse(e, radix: 16)).toList();
+    return commSerial.writeSerial(Uint8List.fromList(resp));
   }
 
-  Future<bool> connectTo(String device) async {
-    if (_device != device) {
-      if (_port.isOpen) _port.close();
-      _device = device;
-      _port = SerialPort(device);
-      if (!_port.openReadWrite()) {
-        //print(SerialPort.lastError);
-        return false;
-      }
-    }
-    return true;
+  void connect(String port) {
+    commSerial.openSerial(port,
+        baudRate: 19200, bytesize: 8, parity: 0, stopbits: 1);
   }
 
   void disconnect() {
-    _port.close();
+    commSerial.closeSerial();
   }
 }
