@@ -5,9 +5,9 @@ class HrtComm {
   late SerialPort _port;
   late Uint8List _data;
   String _device = "";
-  HrtComm([SerialPort? client]) {
-    if (client != null) {
-      _port = client;
+  HrtComm([SerialPort? port]) {
+    if (port != null) {
+      _port = port;
     }
   }
 

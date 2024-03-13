@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hctvirtual/src/models/hrt_frame.dart';
 
@@ -19,7 +18,7 @@ void main() {
     expect(frame.checkSum, 'AB');
   });
   //For a short Frame 1 byte
-  test('O frame "FF40A3CD0100AF" esta errado CheckSum apenas', () {
+  test('O frame "FF40A3CD0100AF" esta errado apenas o CheckSum', () {
     final frame = HrtFrame("FF40A3CD0100AF");
     expect(frame.log, "Incorrect CheckSum");
     expect(frame.preamble, 'FF');
