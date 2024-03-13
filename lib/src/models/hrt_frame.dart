@@ -99,7 +99,7 @@ class HrtFrame {
     } else {
       deviceType = strFrame.substring(posIniFrame + 4, posIniFrame + 6);
     }
-    //Extrai o Address
+    //Extrai o Address que pode ser de um byte ou tres bytes.
     if (isLongFrame == false) {
       address = strFrame.substring(posIniFrame + 2, posIniFrame + 4);
     } else {
@@ -111,7 +111,7 @@ class HrtFrame {
     } else {
       command = strFrame.substring(posIniFrame + 12, posIniFrame + 14);
     }
-    //Extrai o size do body [nbody] e o body
+    //Extrai o numero de bytes do body [nbbody] e o body
     if (isLongFrame == false) {
       nBBody = int.parse(strFrame.substring(posIniFrame + 6, posIniFrame + 8),
           radix: 16);
@@ -122,7 +122,7 @@ class HrtFrame {
       _body =
           strFrame.substring(posIniFrame + 16, posIniFrame + 16 + 2 * nBBody);
     }
-    //Extrai o CheckSum
+    //Extrai o CheckSum e checa se ele esta correto.
     checkSum = strFrame.substring(strFrame.length - 2);
     if (calculedCheckSum() != checkSum) {
       log += ["Incorrect CheckSum"];
