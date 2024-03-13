@@ -3,7 +3,7 @@ import 'package:hctvirtual/src/extension/comm_serial.dart';
 
 class HrtComm {
   final commSerial = CommSerial();
-  HrtComm(String? port) {
+  HrtComm([String? port]) {
     if (port != null) {
       connect(port);
     }

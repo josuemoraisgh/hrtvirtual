@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:hctvirtual/src/models/hrt_settings.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HrtStorage {
@@ -16,7 +17,13 @@ class HrtStorage {
 
   Future<String?> getVariable(String idVariable) async {
     final box = await completer.future;
-    return box.get(idVariable);
+    final resp = box.get(idVariable);
+    if (resp == null) {
+      if (hrtSettings[idVariable] != null) {
+        return hrtSettings[idVariable]!.$3;
+      }
+    }
+    return resp;
   }
 
   Future<void> setVariable(String idVariable, String value) async {

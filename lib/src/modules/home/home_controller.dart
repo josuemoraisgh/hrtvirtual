@@ -1,14 +1,20 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:hctvirtual/src/models/hrt_comm.dart';
+import 'package:hctvirtual/src/models/hrt_frame.dart';
+import 'package:hctvirtual/src/models/hrt_storage.dart';
 
 class HomeController {
-  final doadorCount = ValueNotifier<int>(0);
-  final answer = ValueNotifier<List<String>>([]);
-  final answerAux = ValueNotifier<List<ValueNotifier<String>>>([]);
-  final ValueNotifier<String> activeTagButtom = ValueNotifier<String>('');
-  final ValueNotifier<bool> isExpanded = ValueNotifier<bool>(false);
-
+  final hrtFrame = HrtFrame();
+  final hrtComm = HrtComm();
+  final hrtStorage = HrtStorage();
+  final valueChanged = ValueNotifier<(String, String)>(("", ""));// NAME, VALUE
+  
   HomeController();
 
-  Future init() async {}
+  Future init() async {
+    valueChanged.addListener(() {
+      hrtStorage.setVariable(valueChanged.value.$1, valueChanged.value.$2); 
+    });
+  }
 }
