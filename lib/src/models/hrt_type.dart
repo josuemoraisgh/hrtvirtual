@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:hctvirtual/src/extension/split_string.dart';
-import '../extension/dec_bin.dart';
+import 'package:hctvirtual/src/extension/split_by_length_string.dart';
+import '../extension/bit_field_int.dart';
 import 'dart:math';
 
 dynamic hrtTypeHexTo(String valor, String type) {

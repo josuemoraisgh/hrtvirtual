@@ -4,8 +4,8 @@
 //                                         OU
 // PREAMBLE DELIMITER MANUFACTERID DEVICETYPE ADDRESS  COMMAND  NBBody  BODY   CheckSum
 // xbytes   1bytes    1bytes       1bytes     3bytes   1bytes   1byte   xbytes 1byte
-import 'package:hctvirtual/src/extension/dec_bin.dart';
-import 'package:hctvirtual/src/extension/split_string.dart';
+import 'package:hctvirtual/src/extension/bit_field_int.dart';
+import 'package:hctvirtual/src/extension/split_by_length_string.dart';
 
 class HrtFrame {
   String log = "";

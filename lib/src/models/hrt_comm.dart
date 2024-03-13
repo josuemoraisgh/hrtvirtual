@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:hctvirtual/src/extension/comm_serial.dart';
+import 'package:hctvirtual/src/extension/split_by_length_string.dart';
 
 class HrtComm {
   final commSerial = CommSerial();
@@ -10,13 +11,16 @@ class HrtComm {
   }
 
   String readFrame() {
-    final resp =
-        commSerial.readSerial().map((e) => e.toRadixString(16)).toString();
+    final resp = commSerial
+        .readSerial()
+        .map((e) => e.toRadixString(16).padLeft(2, '0'))
+        .toString()
+        .toUpperCase();
     return resp;
   }
 
   bool writeFrame(String data) {
-    final resp = data.split('').map((e) => int.parse(e, radix: 16)).toList();
+    final resp = data.splitByLength(2).map((e) => int.parse(e, radix: 16)).toList();
     return commSerial.writeSerial(Uint8List.fromList(resp));
   }
 

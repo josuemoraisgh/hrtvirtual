@@ -1,7 +1,8 @@
 import 'dart:typed_data';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
-class CommSerial {
+class CommSerial extends Disposable {
   SerialPort? sp;
 
   bool openSerial(String port,
@@ -55,9 +56,15 @@ class CommSerial {
         if (write.isNotEmpty) {
           tam = sp!.write(write);
         }
-        if (tam >= write.length) return true;
+        //if (tam >= write.length) return true;
+        return true;
       }
     }
     return false;
+  }
+
+  @override
+  void dispose() {
+    closeSerial();
   }
 }
