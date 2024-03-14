@@ -8,7 +8,7 @@ void main() {
     expect(frame.log, "");
     expect(frame.preamble, 'FF');
     expect(frame.delimiter, 'F0');
-    expect(frame.isLongFrame, true);
+    expect(frame.addressType, true);
     expect(frame.manufacterID, 'A3');
     expect(frame.deviceType, 'EA');
     expect(frame.address, 'F3DCAB');
@@ -23,7 +23,7 @@ void main() {
     expect(frame.log, "Incorrect CheckSum");
     expect(frame.preamble, 'FF');
     expect(frame.delimiter, '40');
-    expect(frame.isLongFrame, false);
+    expect(frame.addressType, false);
     expect(frame.manufacterID, '');
     expect(frame.deviceType, '');
     expect(frame.address, 'A3');
@@ -35,10 +35,10 @@ void main() {
 
   test('O frame "40A3CD0100AF" esta errado falta preamble', () {
     final frame = HrtFrame("40A3CD0100AF");
-    expect(frame.log, "Don't find Preamble in Frame");    
+    expect(frame.log, "Don't find Preamble in Frame");
     expect(frame.preamble, '');
     expect(frame.delimiter, '');
-    expect(frame.isLongFrame, false);
+    expect(frame.addressType, false);
     expect(frame.manufacterID, '');
     expect(frame.deviceType, '');
     expect(frame.address, '');

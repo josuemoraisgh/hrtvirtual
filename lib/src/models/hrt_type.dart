@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:hctvirtual/src/extension/split_by_length_string.dart';
+import 'package:hctvirtual/src/extension/hex_extension_string.dart';
 import '../extension/bit_field_int.dart';
 import 'dart:math';
 
 dynamic hrtTypeHexTo(String valor, String type) {
   final result = switch (type) {
     'UInt' => _hrtTypeHex2UInt(valor),
-    'SReal' => _hrtTypeHex2SReal(valor),
+    'SReal' || 'FLOAT' => _hrtTypeHex2SReal(valor),
     'Date' => _hrtTypeHex2Date(valor),
     'Int' => _hrtTypeHex2Int(valor),
     'PAscii' => _hrtTypeHex2PAscii(valor),
@@ -163,6 +163,8 @@ String _hrtTypeTime2Hex(DateTime valor) {
   final aux = (valor.hour * 3600000 +
           valor.minute * 60000 +
           valor.second * 1000 +
-          valor.millisecond) ~/ 0.03125;
-  return "${aux.getBits(24, 8).toRadixString(16).padLeft(2, '0')}${aux.getBits(16, 8).toRadixString(16).padLeft(2, '0')}${aux.getBits(8, 8).toRadixString(16).padLeft(2, '0')}${aux.getBits(0, 8).toRadixString(16).padLeft(2, '0')}".toUpperCase();
+          valor.millisecond) ~/
+      0.03125;
+  return "${aux.getBits(24, 8).toRadixString(16).padLeft(2, '0')}${aux.getBits(16, 8).toRadixString(16).padLeft(2, '0')}${aux.getBits(8, 8).toRadixString(16).padLeft(2, '0')}${aux.getBits(0, 8).toRadixString(16).padLeft(2, '0')}"
+      .toUpperCase();
 }

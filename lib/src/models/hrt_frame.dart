@@ -5,14 +5,15 @@
 // PREAMBLE DELIMITER MANUFACTERID DEVICETYPE ADDRESS  COMMAND  NBBody  BODY   CheckSum
 // xbytes   1bytes    1bytes       1bytes     3bytes   1bytes   1byte   xbytes 1byte
 import 'package:hctvirtual/src/extension/bit_field_int.dart';
-import 'package:hctvirtual/src/extension/split_by_length_string.dart';
+import 'package:hctvirtual/src/extension/hex_extension_string.dart';
 
 class HrtFrame {
   String log = "";
   int posIniFrame = 0;
   String preamble = "";
   String _delimiter = "";
-  bool _isLongFrame = false;
+  bool _addressType = false;
+  int _frameType = 6;
   String manufacterID = "";
   String deviceType = "";
   String address = "";
@@ -87,33 +88,33 @@ class HrtFrame {
       //Extrai o type frame
       final value = int.parse(strFrame.substring(posIniFrame, posIniFrame + 1),
           radix: 16);
-      _isLongFrame = value.getBits(3, 1) == 1 ? true : false;
+      _addressType = value.getBits(3, 1) == 1 ? true : false;
       //Extrai o ManufacterID se houver
-      if (_isLongFrame == false) {
+      if (_addressType == false) {
         manufacterID = "";
       } else {
         manufacterID = strFrame.substring(posIniFrame + 2, posIniFrame + 4);
       }
       //Extrai o Device Type se houver
-      if (_isLongFrame == false) {
+      if (_addressType == false) {
         deviceType = "";
       } else {
         deviceType = strFrame.substring(posIniFrame + 4, posIniFrame + 6);
       }
       //Extrai o Address que pode ser de um byte ou tres bytes.
-      if (_isLongFrame == false) {
+      if (_addressType == false) {
         address = strFrame.substring(posIniFrame + 2, posIniFrame + 4);
       } else {
         address = strFrame.substring(posIniFrame + 6, posIniFrame + 12);
       }
       //Extrai o Command
-      if (_isLongFrame == false) {
+      if (_addressType == false) {
         command = strFrame.substring(posIniFrame + 4, posIniFrame + 6);
       } else {
         command = strFrame.substring(posIniFrame + 12, posIniFrame + 14);
       }
       //Extrai o numero de bytes do body [nbbody] e o body
-      if (_isLongFrame == false) {
+      if (_addressType == false) {
         _nBBody = int.parse(
             strFrame.substring(posIniFrame + 6, posIniFrame + 8),
             radix: 16);
@@ -138,7 +139,7 @@ class HrtFrame {
 
   //O nBBody só pode ser lido não escrito
   int get nBBody => _nBBody;
-  
+
   //Setando o body ja seta o nBBody
   String get body => _body;
   set body(String newBody) {
@@ -146,12 +147,21 @@ class HrtFrame {
     _body = newBody;
   }
 
-  //Alterando o isLongFrame altera o delimiter
-  bool get isLongFrame => _isLongFrame;
-  set isLongFrame(bool newIsLongFrame) {
-    _isLongFrame = newIsLongFrame;
+  //Alterando o frameType altera o delimiter
+  int get frameType => _frameType;
+  set frameType(int newFrameType) {
+    _frameType = newFrameType;
     final value = int.parse(_delimiter, radix: 16);
-    value.setBits(7, 1, _isLongFrame == true ? 1 : 0);
+    value.setBits(0, 3, newFrameType);
+    _delimiter = value.toRadixString(16).padLeft(2, '0');
+  }
+
+  //Alterando o addressType altera o delimiter
+  bool get addressType => _addressType;
+  set addressType(bool newAddressType) {
+    _addressType = newAddressType;
+    final value = int.parse(_delimiter, radix: 16);
+    value.setBits(7, 1, _addressType == true ? 1 : 0);
     _delimiter = value.toRadixString(16).padLeft(2, '0');
   }
 
@@ -160,6 +170,6 @@ class HrtFrame {
   set delimiter(String newDelimiter) {
     _delimiter = newDelimiter;
     final value = int.parse(_delimiter, radix: 16);
-    _isLongFrame = value.getBits(7, 1) == 1 ? true : false;
+    _addressType = value.getBits(7, 1) == 1 ? true : false;
   }
 }

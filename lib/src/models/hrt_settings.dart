@@ -2,7 +2,7 @@
 const Map<String, (int, String, String)> hrtSettings = {
   'frame_type': (1, 'UNSIGNED', '06'),
   'address_type': (1, 'UNSIGNED', '00'),
-  'error_code': (2, 'ENUM00', '00 40'),
+  'error_code': (2, 'ENUM00', '0040'),
   'response_code': (1, 'ENUM27', '30'),
   'device_status': (1, 'BIT_ENUM02', '20'),
   'comm_status': (1, 'BIT_ENUM03', '00'),
@@ -15,23 +15,23 @@ const Map<String, (int, String, String)> hrtSettings = {
   'software_revision': (1, 'UNSIGNED', '04'),
   'hardware_revision': (1, 'UNSIGNED', '01'),
   'device_flags': (1, 'BIT_ENUM04', '00'),
-  'device_id': (3, 'UNSIGNED', '00 1E 66'),
+  'device_id': (3, 'UNSIGNED', '001E66'),
   'polling_address': (1, 'UNSIGNED', '80'),
-  'tag': (8, 'PACKED_ASCII', '51 4C F0 C6 08 20'), //TT301
+  'tag': (8, 'PACKED_ASCII', '514CF0C60820'), //TT301
   'message': (
     32,
     'PACKED_ASCII',
-    '34 51 09 10 F4 A0 10 58 14 14 D4 05 48 15 15 48 18 20 82 08 20 82 08 20'
+    '34510910F4A010581414D405481515481820820820820820'
   ), //MEDIDOR DE TEMPERATURA
   'descriptor': (
     16,
     'PACKED_ASCII',
-    '50 53 50 15 20 54 55 20 60 82 08 20'
+    '505350152054552060820820'
   ), //TEMPERATURA
-  'date': (3, 'DATE', '13 08 79'), //19/08/2021
-  'upper_range_value': (4, 'FLOAT', '44 54 80 00'), //850
-  'lower_range_value': (4, 'FLOAT', 'C3 48 00 00'), //-200
-  'PROCESS_VARIABLE': (4, 'FLOAT', '42 48 00 00'), //50
+  'date': (3, 'DATE', '130879'), //19/08/2021
+  'upper_range_value': (4, 'FLOAT', '44548000'), //850
+  'lower_range_value': (4, 'FLOAT', 'C3480000'), //-200
+  'PROCESS_VARIABLE': (4, 'FLOAT', '42480000'), //50
   'percent_of_range': (
     4,
     'FLOAT',
@@ -57,14 +57,14 @@ const Map<String, (int, String, String)> hrtSettings = {
   'digital_units': (1, 'ENUM00', '00'),
   'sensor_type': (1, 'ENUM00', '00'),
   'analog_output_transfer_function': (1, 'ENUM00', '00'),
-  'ma_analog_output_1_value': (4, 'FLOAT', '00 00 00 00'),
+  'ma_analog_output_1_value': (4, 'FLOAT', '00000000'),
   'ma_analog_output_1_alarm_select': (1, 'ENUM00', '00'),
-  'sensor1_serial_number': (3, 'UNSIGNED', '00 00 00'),
+  'sensor1_serial_number': (3, 'UNSIGNED', '000000'),
   'DEVICE_MODE': (1, 'ENUM00', '00'),
   'number_wires': (1, 'ENUM00', '00'),
   'device_code': (1, 'UNSIGNED', '00'),
   'lin_mode': (1, 'ENUM00', '00'),
-  'SETPOINT': (4, 'FLOAT', '00 00 00 00'),
+  'SETPOINT': (4, 'FLOAT', '00000000'),
   'MANIPULATED_VARIABLE': (4, 'FLOAT', '00'),
   'CONTROLLER_TYPE': (1, 'ENUM00', '00'),
   'POWER_UP_MODE': (1, 'ENUM00', '00'),
@@ -73,15 +73,15 @@ const Map<String, (int, String, String)> hrtSettings = {
   'SETPOINT_TRACKING_MODE': (1, 'ENUM00', '00'),
   'pid_mode': (1, 'ENUM00', '00'),
   'ERROR_PERCENT_RANGE': (4, 'FLOAT', '00'),
-  'PROPORTIONAL_GAIN': (4, 'FLOAT', '00 00 00 00'),
-  'INTEGRAL_TIME': (4, 'FLOAT', '00 00 00 00'),
-  'DERIVATIVE_TIME': (4, 'FLOAT', '00 00 00 00'),
-  'MV_HIGH_LIMIT': (4, 'FLOAT', '00 00 00 00'),
-  'MV_LOW_LIMIT': (4, 'FLOAT', '00 00 00 00'),
-  'MV_ROC_LIMIT': (4, 'FLOAT', '00 00 00 00'),
-  'POWER_UP_SETPOINT_PERCENT_RANGE': (4, 'FLOAT', '00 00 00 00'),
-  'POWER_UP_OUTPUT': (4, 'FLOAT', '00 00 00 00'),
-  'set_point_time': (4, 'FLOAT', '00 00 00 00'),
+  'PROPORTIONAL_GAIN': (4, 'FLOAT', '00000000'),
+  'INTEGRAL_TIME': (4, 'FLOAT', '00000000'),
+  'DERIVATIVE_TIME': (4, 'FLOAT', '00000000'),
+  'MV_HIGH_LIMIT': (4, 'FLOAT', '00000000'),
+  'MV_LOW_LIMIT': (4, 'FLOAT', '00000000'),
+  'MV_ROC_LIMIT': (4, 'FLOAT', '00000000'),
+  'POWER_UP_SETPOINT_PERCENT_RANGE': (4, 'FLOAT', '00000000'),
+  'POWER_UP_OUTPUT': (4, 'FLOAT', '00000000'),
+  'set_point_time': (4, 'FLOAT', '00000000'),
   'set_point_generator_mode': (1, 'ENUM00', '00'),
   'set_point_time_generator_mode': (1, 'ENUM00', '00'),
   'range_units': (1, 'UNSIGNED', '00'),
@@ -91,11 +91,11 @@ const Map<String, (int, String, String)> hrtSettings = {
   'local_adjust_protection_mode': (1, 'ENUM00', '00'),
   'local_adjust_mode': (1, 'ENUM00', '00'),
   'input_unit_code': (1, 'ENUM00', '00'),
-  'output_variable': (4, 'FLOAT', '00 00 00 00'),
-  'mv_ohms': (4, 'FLOAT', '00 00 00 00'),
+  'output_variable': (4, 'FLOAT', '00000000'),
+  'mv_ohms': (4, 'FLOAT', '00000000'),
   'cal_point_limits_unit': (1, 'ENUM00', '00'),
-  'upper_cal_point_value': (4, 'FLOAT', '00 00 00 00'),
-  'lower_cal_point_value': (4, 'FLOAT', '00 00 00 00'),
+  'upper_cal_point_value': (4, 'FLOAT', '00000000'),
+  'lower_cal_point_value': (4, 'FLOAT', '00000000'),
   'CONTROLLER_MODE': (1, 'ENUM00', '00'),
   'fail_safe_mode': (1, 'ENUM00', '00'),
   'sensor_range': (1, 'ENUM00', '00'),

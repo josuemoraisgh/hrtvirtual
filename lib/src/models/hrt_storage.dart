@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'package:expressions/expressions.dart';
 import 'package:hctvirtual/src/models/hrt_settings.dart';
+import 'package:hctvirtual/src/models/hrt_type.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hctvirtual/src/extension/hex_extension_string.dart';
 
 class HrtStorage {
+  final evaluator = const ExpressionEvaluator();
   Completer<Box<String>> completer = Completer<Box<String>>();
 
   HrtStorage() {
@@ -15,19 +19,46 @@ class HrtStorage {
     }
   }
 
-  Future<String?> getVariable(String idVariable) async {
+  Future<String> getVariable(String idVariable1, [String? idVariable2]) async {
+    String? resp1;
     final box = await completer.future;
-    final resp = box.get(idVariable);
-    if (resp == null) {
-      if (hrtSettings[idVariable] != null) {
-        return hrtSettings[idVariable]!.$3;
+    resp1 = box.get(idVariable1);
+    if (resp1 == null) {
+      if (hrtSettings[idVariable1] != null) {
+        resp1 = hrtSettings[idVariable1]!.$3;
       }
     }
-    return resp;
+    if (idVariable2 != null) {
+      String? resp2 = box.get(idVariable2);
+      if (resp2 == null) {
+        if (hrtSettings[idVariable2] != null) {
+          resp2 = hrtSettings[idVariable2]!.$3;
+        }
+      }
+      return await hrtTranslator(resp1!) & await hrtTranslator(resp2!);
+    }
+    return hrtTranslator(resp1!);
   }
 
   Future<void> setVariable(String idVariable, String value) async {
     final box = await completer.future;
     return box.put(idVariable, value);
+  }
+
+  Future<String> hrtTranslator(String value) async {
+    if (value.substring(0, 1) != '@') return value;
+    final iReg = RegExp(r'[A-Z_a-z]+');
+    final matches = iReg.allMatches(value);
+    Map<String, double> context = {};
+    for (var e in matches) {
+      if (e.group(0) != null) {
+        final variableHex = await getVariable(e.group(0)!);  
+        context[e.group(0)!] =  hrtTypeHexTo(variableHex,hrtSettings[e.group(0)!]!.$2);
+      }
+    }
+    Expression expression = Expression.parse(value.substring(1));
+    return (evaluator.eval(expression, context) as double)
+        .toInt()
+        .toRadixString(16);
   }
 }

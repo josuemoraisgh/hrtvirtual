@@ -3,37 +3,51 @@ import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class CommSerial extends Disposable {
-  SerialPort? sp;
+  SerialPort? _sp;
+  SerialPortReader? _reader;
+
+  bool get isOpen => _sp!.isOpen;
+
+  void listenReader(void Function(Uint8List) dataFunc) {
+    if (_sp!.isOpen) {
+      if (_reader != null) _reader!.close();
+      _reader = SerialPortReader(_sp!);
+      final stream = _reader!.stream;
+      stream.listen(dataFunc);
+    }
+  }
 
   bool openSerial(String port,
       {int? baudRate, int? bytesize, int? parity, int? stopbits}) {
-    if (sp != null) if (sp!.isOpen) sp!.close();
-    sp = SerialPort(port);
-    sp!.config.setFlowControl(SerialPortFlowControl.xonXoff);
-    sp!.config.xonXoff = SerialPortXonXoff.inOut;
+    if (_sp != null) if (_sp!.isOpen) _sp!.close();
+    _sp = SerialPort(port);
+    _sp!.config.setFlowControl(SerialPortFlowControl.xonXoff);
+    _sp!.config.xonXoff = SerialPortXonXoff.inOut;
     if (baudRate != null) {
-      sp!.config.baudRate = baudRate;
+      _sp!.config.baudRate = baudRate;
     }
     if (bytesize != null) {
-      sp!.config.bits = bytesize;
+      _sp!.config.bits = bytesize;
     }
     if (parity != null) {
-      sp!.config.parity = parity;
+      _sp!.config.parity = parity;
     }
     if (stopbits != null) {
-      sp!.config.stopBits = stopbits;
+      _sp!.config.stopBits = stopbits;
     }
-    sp!.openReadWrite();
-    if (sp!.isOpen) {
+    _sp!.openReadWrite();
+    if (_sp!.isOpen) {
+      _reader = SerialPortReader(_sp!);
       return true;
     }
     return false;
   }
 
   bool closeSerial() {
-    if (sp != null) {
-      if (sp!.isOpen) {
-        sp!.close();
+    if (_sp != null) {
+      if (_sp!.isOpen) {
+        _sp!.close();
+        if (_reader != null) _reader!.close();
         return true;
       }
     }
@@ -41,9 +55,9 @@ class CommSerial extends Disposable {
   }
 
   Uint8List readSerial() {
-    if (sp != null) {
-      if (sp!.isOpen) {
-        return sp!.read(sp!.bytesAvailable);
+    if (_sp != null) {
+      if (_sp!.isOpen) {
+        return _sp!.read(_sp!.bytesAvailable);
       }
     }
     return Uint8List(0);
@@ -51,13 +65,12 @@ class CommSerial extends Disposable {
 
   bool writeSerial(Uint8List write) {
     int tam = 0;
-    if (sp != null) {
-      if (sp!.isOpen) {
+    if (_sp != null) {
+      if (_sp!.isOpen) {
         if (write.isNotEmpty) {
-          tam = sp!.write(write);
+          tam = _sp!.write(write, timeout: 0);
         }
-        //if (tam >= write.length) return true;
-        return true;
+        if (tam >= write.length) return true;
       }
     }
     return false;
