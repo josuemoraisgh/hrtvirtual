@@ -45,6 +45,8 @@ class HrtStorage {
     return box.put(idVariable, value);
   }
 
+  
+
   Future<String> hrtTranslator(String value) async {
     if (value.substring(0, 1) != '@') return value;
     final iReg = RegExp(r'[A-Z_a-z]+');
