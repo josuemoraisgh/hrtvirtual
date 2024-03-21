@@ -13,22 +13,20 @@ class HrtSend {
 
   init() async {
     _hrtFrameWrite.addressType =
-        (await _hrtStorage.getVariable('address_type')) == "0" ? false : true;
+        (await _hrtStorage.getVariable('address_type')) == "00" ? false : true;
     _hrtFrameWrite.frameType = (await _hrtStorage.getVariable('frame_type'));
+    _hrtFrameWrite.masterAddress =
+        (await _hrtStorage.getVariable('master_address')) == "00"
+            ? false
+            : true;
     if (_hrtFrameWrite.addressType) {
-      _hrtFrameWrite.manufacterId =
-          await _hrtStorage.getVariable('manufacturer_id');
-      _hrtFrameWrite.deviceType = await _hrtStorage.getVariable('device_type');
-      _hrtFrameWrite.masterAddress =
-          (await _hrtStorage.getVariable('master_address')) == "0"
-              ? false
-              : true;
       _hrtFrameWrite.manufacterId =
           await _hrtStorage.getVariable('manufacter_id');
       _hrtFrameWrite.deviceType = await _hrtStorage.getVariable('device_type');
       _hrtFrameWrite.deviceId = await _hrtStorage.getVariable('device_id');
     } else {
-      _hrtFrameWrite.address = "";
+      _hrtFrameWrite.pollingAddress =
+          await _hrtStorage.getVariable('polling_address');
     }
     if (_hrtFrameWrite.frameType == "06") {
       request();

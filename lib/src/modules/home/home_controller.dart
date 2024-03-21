@@ -22,6 +22,7 @@ class HomeController {
   }
 
   void masterMode(String commandWrite) {
+    hrtStorage.setVariable('master_address','01');
     final hrtFrameRead = HrtFrame()..command = commandWrite;
     if (hrtFrameRead.log.isEmpty) {
       final hrtRequest = HrtSend(hrtStorage, hrtFrameRead);
@@ -37,6 +38,7 @@ class HomeController {
   }
 
   void slaveMode(String frameRead) {
+    hrtStorage.setVariable('master_address','00');    
     final hrtFrameRead = HrtFrame(frameRead);
     if (hrtFrameRead.log.isEmpty) {
       final hrtResponse = HrtSend(hrtStorage, hrtFrameRead);

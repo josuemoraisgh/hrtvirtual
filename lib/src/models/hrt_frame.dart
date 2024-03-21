@@ -10,21 +10,21 @@ import 'package:hrtvirtual/src/extension/hex_extension_string.dart';
 class HrtFrame {
   String log = "";
   int posIniFrame = 0;
-  String preamble = "";
-  String _delimiter = "";
+  String preamble = "FFFFFFFF";
+  String _delimiter = "00";
   bool _addressType = false;
   String _frameType = "02";
   bool _masterAddress = true;
   bool _burstMode = false;
-  String _manufacterId = "";
-  String _deviceType = "";
-  String _address = "";
-  String _deviceId = "";
-  String _pollingAddress = "";
-  String command = "";
+  String _manufacterId = "00";
+  String _deviceType = "00";
+  String _address = "00";
+  String _deviceId = "00";
+  String _pollingAddress = "00";
+  String command = "00";
   int _nBBody = 0;
   String _body = "";
-  String checkSum = "";
+  String checkSum = "00";
 
   HrtFrame([String? frame]) {
     if (frame != null) {
