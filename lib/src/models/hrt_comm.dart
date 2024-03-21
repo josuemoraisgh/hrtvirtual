@@ -3,12 +3,15 @@ import 'package:hrtvirtual/src/extension/comm_serial.dart';
 import 'package:hrtvirtual/src/extension/hex_extension_string.dart';
 
 class HrtComm {
+  String? port;
   final _commSerial = CommSerial();
-  HrtComm([String? port, void Function(String)? dataFunc]) {
+  HrtComm([this.port, void Function(String)? dataFunc]) {
     if (port != null) {
-      connect(port, dataFunc);
+      connect(port!, dataFunc);
     }
   }
+
+  List<String> get availablePorts => _commSerial.availablePorts;
 
   String readFrame() {
     final resp = _commSerial.readSerial();
@@ -24,8 +27,11 @@ class HrtComm {
     return _commSerial.writeSerial(Uint8List.fromList(resp));
   }
 
-  void connect(String port, void Function(String)? dataFunc) {
-    _commSerial.openSerial(port,
+  void connect([
+    String? port,
+    void Function(String)? dataFunc,
+  ]) {
+    _commSerial.openSerial(port ?? (this.port ?? availablePorts[0]),
         baudRate: 19200, bytesize: 8, parity: 0, stopbits: 1);
     if (dataFunc != null) {
       _commSerial.listenReader(

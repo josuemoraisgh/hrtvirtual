@@ -6,6 +6,8 @@ class CommSerial extends Disposable {
   SerialPort? _sp;
   SerialPortReader? _reader;
 
+  List<String> get availablePorts  => SerialPort.availablePorts;
+
   bool get isOpen => _sp!.isOpen;
 
   void listenReader(void Function(Uint8List) dataFunc) {

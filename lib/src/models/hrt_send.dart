@@ -1,11 +1,11 @@
 import 'package:hrtvirtual/src/models/hrt_frame.dart';
 import 'package:hrtvirtual/src/models/hrt_storage.dart';
 
-class HrtResponse {
+class HrtSend {
   final _hrtFrameWrite = HrtFrame();
   final HrtFrame _hrtFrameRead;
   final HrtStorage _hrtStorage;
-  HrtResponse(this._hrtFrameRead, this._hrtStorage) {
+  HrtSend(this._hrtStorage, this._hrtFrameRead) {
     init();
   }
 
@@ -15,7 +15,7 @@ class HrtResponse {
     _hrtFrameWrite.addressType =
         (await _hrtStorage.getVariable('address_type')) == "0" ? false : true;
     _hrtFrameWrite.frameType = (await _hrtStorage.getVariable('frame_type'));
-    if (_hrtFrameRead.addressType) {
+    if (_hrtFrameWrite.addressType) {
       _hrtFrameWrite.manufacterId =
           await _hrtStorage.getVariable('manufacturer_id');
       _hrtFrameWrite.deviceType = await _hrtStorage.getVariable('device_type');
