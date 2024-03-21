@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:expressions/expressions.dart';
-import 'package:hctvirtual/src/models/hrt_settings.dart';
-import 'package:hctvirtual/src/models/hrt_type.dart';
+import 'package:hrtvirtual/src/models/hrt_settings.dart';
+import 'package:hrtvirtual/src/models/hrt_type.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hctvirtual/src/extension/hex_extension_string.dart';
+import 'package:hrtvirtual/src/extension/hex_extension_string.dart';
 
 class HrtStorage {
   final evaluator = const ExpressionEvaluator();

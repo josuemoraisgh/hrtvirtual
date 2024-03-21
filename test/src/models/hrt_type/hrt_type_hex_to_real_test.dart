@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hctvirtual/src/models/hrt_type.dart';
+import 'package:hrtvirtual/src/models/hrt_type.dart';
 
 void main() {
   test('Deve calcular para 3FBE3A80 o valor 1.4861602783203125', () {

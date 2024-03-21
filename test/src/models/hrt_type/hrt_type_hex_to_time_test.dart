@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hctvirtual/src/models/hrt_type.dart';
+import 'package:hrtvirtual/src/models/hrt_type.dart';
 
 void main() {
   test('Deve dar 1900-01-01 00:23:18.526 quando valor em Hex for 02AADFC0', () {

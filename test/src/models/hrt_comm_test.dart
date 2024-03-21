@@ -1,9 +1,10 @@
 import 'package:expressions/expressions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hctvirtual/src/models/hrt_comm.dart';
-import 'package:hctvirtual/src/models/hrt_settings.dart';
-import 'package:hctvirtual/src/models/hrt_storage.dart';
-import 'package:hctvirtual/src/models/hrt_type.dart';
+import 'package:hrtvirtual/src/models/hrt_comm.dart';
+import 'package:hrtvirtual/src/models/hrt_settings.dart';
+import 'package:hrtvirtual/src/models/hrt_storage.dart';
+import 'package:hrtvirtual/src/models/hrt_type.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() {
@@ -54,6 +55,8 @@ void main() {
     Expression expression = Expression.parse(value.substring(1));
     const evaluator = ExpressionEvaluator();
     var r = (evaluator.eval(expression, context) as double);
-    print(r.toInt().toRadixString(16));
+    if (kDebugMode) {
+      print(r.toInt().toRadixString(16));
+    }
   });
 }

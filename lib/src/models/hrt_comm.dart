@@ -1,6 +1,6 @@
 import 'dart:typed_data';
-import 'package:hctvirtual/src/extension/comm_serial.dart';
-import 'package:hctvirtual/src/extension/hex_extension_string.dart';
+import 'package:hrtvirtual/src/extension/comm_serial.dart';
+import 'package:hrtvirtual/src/extension/hex_extension_string.dart';
 
 class HrtComm {
   final _commSerial = CommSerial();

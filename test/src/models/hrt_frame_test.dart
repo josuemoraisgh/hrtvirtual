@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hctvirtual/src/models/hrt_frame.dart';
+import 'package:hrtvirtual/src/models/hrt_frame.dart';
 
 void main() {
   //For a long Frame 3 bytes
@@ -9,7 +9,7 @@ void main() {
     expect(frame.preamble, 'FF');
     expect(frame.delimiter, 'F0');
     expect(frame.addressType, true);
-    expect(frame.manufacterID, 'A3');
+    expect(frame.manufacterId, 'A3');
     expect(frame.deviceType, 'EA');
     expect(frame.address, 'F3DCAB');
     expect(frame.command, '97');
@@ -24,7 +24,7 @@ void main() {
     expect(frame.preamble, 'FF');
     expect(frame.delimiter, '40');
     expect(frame.addressType, false);
-    expect(frame.manufacterID, '');
+    expect(frame.manufacterId, '');
     expect(frame.deviceType, '');
     expect(frame.address, 'A3');
     expect(frame.command, 'CD');
@@ -39,7 +39,7 @@ void main() {
     expect(frame.preamble, '');
     expect(frame.delimiter, '');
     expect(frame.addressType, false);
-    expect(frame.manufacterID, '');
+    expect(frame.manufacterId, '');
     expect(frame.deviceType, '');
     expect(frame.address, '');
     expect(frame.command, '');

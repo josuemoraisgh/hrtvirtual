@@ -1,5 +1,5 @@
-import 'package:hctvirtual/src/models/hrt_frame.dart';
-import 'package:hctvirtual/src/models/hrt_storage.dart';
+import 'package:hrtvirtual/src/models/hrt_frame.dart';
+import 'package:hrtvirtual/src/models/hrt_storage.dart';
 
 class HrtRequest {
   final HrtFrame _hrtFrame;
