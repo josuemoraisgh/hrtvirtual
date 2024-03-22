@@ -8,6 +8,18 @@ import 'package:hrtvirtual/src/models/hrt_type.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() {
+
+  test('Test 01', () async {
+    final hrtComm0 = HrtComm();
+    final aux0 = hrtComm0.connect('COM4');
+    expect(aux0, true);
+    expect(hrtComm0.writeFrame('FFFFFFFFFF0280000082'), true);
+    await Future.delayed(const Duration(seconds: 2)).then((value) {
+      final aux1 = hrtComm0.readFrame();
+      expect(aux1, 'FFFFFFFFFF0680000E0000FE3E02050504300100001E6607');
+    });
+    hrtComm0.disconnect();
+  });
   test('Write Frame in COM3 and read the same data in COM4', () {
     final hrtComm0 = HrtComm('COM3');
     final hrtComm1 = HrtComm('COM4');
@@ -16,6 +28,7 @@ void main() {
     hrtComm0.disconnect();
     hrtComm1.disconnect();
   });
+
   test('Write in COM3 and read and write in COM4 and read in COM3', () {
     final hrtComm0 = HrtComm('COM3');
     final hrtComm1 = HrtComm('COM4');
@@ -25,7 +38,9 @@ void main() {
     hrtComm0.disconnect();
     hrtComm1.disconnect();
   });
-  test('Write in COM3 and read and write in COM4 and read in COM3', () async {
+
+  test('Write in COM3 and read and write in COM4 and read in COM3 new',
+      () async {
     final hrtComm0 = HrtComm('COM3');
     final hrtComm1 = HrtComm();
     hrtComm1.connect('COM4', hrtComm1.writeFrame);
@@ -37,6 +52,7 @@ void main() {
     hrtComm0.disconnect();
     hrtComm1.disconnect();
   });
+
   test("Correto", () async {
     Hive.init('C:');
     final hrtStorage = HrtStorage();

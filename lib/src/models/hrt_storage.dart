@@ -10,12 +10,8 @@ class HrtStorage {
   Completer<Box<String>> completer = Completer<Box<String>>();
 
   HrtStorage() {
-    _init();
-  }
-
-  Future<void> _init() async {
     if (!completer.isCompleted) {
-      completer.complete(await Hive.openBox<String>('HRTSTORAGE'));
+      completer.complete(Hive.openBox<String>('HRTSTORAGE'));
     }
   }
 
@@ -35,17 +31,15 @@ class HrtStorage {
           resp2 = hrtSettings[idVariable2]!.$3;
         }
       }
-      return await hrtTranslator(resp1!) & await hrtTranslator(resp2!);
+      return (await hrtTranslator(resp1!)).padLeft(hrtSettings[idVariable1]!.$1, '0') & (await hrtTranslator(resp2!)).padLeft(hrtSettings[idVariable2]!.$1, '0');
     }
-    return hrtTranslator(resp1!);
+    return (await hrtTranslator(resp1!)).padLeft(hrtSettings[idVariable1]!.$1, '0');
   }
 
   Future<void> setVariable(String idVariable, String value) async {
     final box = await completer.future;
     return box.put(idVariable, value);
   }
-
-  
 
   Future<String> hrtTranslator(String value) async {
     if (value.substring(0, 1) != '@') return value;
@@ -54,13 +48,15 @@ class HrtStorage {
     Map<String, double> context = {};
     for (var e in matches) {
       if (e.group(0) != null) {
-        final variableHex = await getVariable(e.group(0)!);  
-        context[e.group(0)!] =  hrtTypeHexTo(variableHex,hrtSettings[e.group(0)!]!.$2);
+        final variableHex = await getVariable(e.group(0)!);
+        context[e.group(0)!] =
+            hrtTypeHexTo(variableHex, hrtSettings[e.group(0)!]!.$2);
       }
     }
     Expression expression = Expression.parse(value.substring(1));
     return (evaluator.eval(expression, context) as double)
         .toInt()
-        .toRadixString(16);
+        .toRadixString(16)
+        .toUpperCase();
   }
 }

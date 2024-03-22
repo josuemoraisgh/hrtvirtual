@@ -1,17 +1,23 @@
+import 'dart:async';
+
 import 'package:hrtvirtual/src/models/hrt_frame.dart';
 import 'package:hrtvirtual/src/models/hrt_storage.dart';
 
-class HrtSend {
+class HrtBuild {
   final _hrtFrameWrite = HrtFrame();
   final HrtFrame _hrtFrameRead;
   final HrtStorage _hrtStorage;
-  HrtSend(this._hrtStorage, this._hrtFrameRead) {
-    init();
+  Completer<bool> completer = Completer<bool>();
+  HrtBuild(this._hrtStorage, this._hrtFrameRead) {
+    completer.complete(_init());
   }
 
-  String get frame => _hrtFrameWrite.frame;
+  Future<String> get frame async {
+    await completer.future;
+    return _hrtFrameWrite.frame;
+  }
 
-  init() async {
+  Future<bool> _init() async {
     _hrtFrameWrite.addressType =
         (await _hrtStorage.getVariable('address_type')) == "00" ? false : true;
     _hrtFrameWrite.frameType = (await _hrtStorage.getVariable('frame_type'));
@@ -28,14 +34,10 @@ class HrtSend {
       _hrtFrameWrite.pollingAddress =
           await _hrtStorage.getVariable('polling_address');
     }
-    if (_hrtFrameWrite.frameType == "06") {
-      request();
-    } else {
-      response();
-    }
+    return _hrtFrameWrite.frameType == "02" ? request() : response();
   }
 
-  request() async {
+  Future<bool> request() async {
     switch (_hrtFrameRead.command) {
       case '00': //Identity Command
         _hrtFrameWrite.body = "";
@@ -74,14 +76,15 @@ class HrtSend {
       case '21': //Read Device Variables (33)
         _hrtFrameWrite.body = "";
     }
+    return true;
   }
 
-  response() async {
+  Future<bool> response() async {
     switch (_hrtFrameRead.command) {
       case '00': //Identity Command
         _hrtFrameWrite.body = "00" //error_code
             "FE"
-            "${await _hrtStorage.getVariable('master_slave', 'manufacturer_id')}"
+            "${await _hrtStorage.getVariable('master_address', 'manufacturer_id')}"
             "${await _hrtStorage.getVariable('device_type')}"
             "${await _hrtStorage.getVariable('request_preambles')}"
             "${await _hrtStorage.getVariable('hart_revision')}"
@@ -175,5 +178,6 @@ class HrtSend {
           _ => '08 00 00 00 00 7F A0 00 00',
         };
     }
+    return true;
   }
 }

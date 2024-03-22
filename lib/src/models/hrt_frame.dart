@@ -10,7 +10,7 @@ import 'package:hrtvirtual/src/extension/hex_extension_string.dart';
 class HrtFrame {
   String log = "";
   int posIniFrame = 0;
-  String preamble = "FFFFFFFF";
+  String preamble = "FFFFFFFFFF";
   String _delimiter = "00";
   bool _addressType = false;
   String _frameType = "02";
@@ -137,8 +137,10 @@ class HrtFrame {
   set frameType(String newFrameType) {
     _frameType = newFrameType;
     final value = int.parse(_delimiter, radix: 16);
-    value.setBits(0, 3, int.parse(_frameType, radix: 16));
-    _delimiter = value.toRadixString(16).padLeft(2, '0');
+    _delimiter = value
+        .setBits(0, 3, int.parse(_frameType, radix: 16))
+        .toRadixString(16)
+        .padLeft(2, '0');
   }
 
   //Alterando o addressType altera o delimiter
@@ -146,8 +148,10 @@ class HrtFrame {
   set addressType(bool newAddressType) {
     _addressType = newAddressType;
     final value = int.parse(_delimiter, radix: 16);
-    value.setBits(7, 1, _addressType == true ? 1 : 0);
-    _delimiter = value.toRadixString(16).padLeft(2, '0');
+    _delimiter = value
+        .setBits(7, 1, _addressType == true ? 1 : 0)
+        .toRadixString(16)
+        .padLeft(2, '0');
   }
 
   //Alterando o delimiter tem que alterar o addressType e o frameType

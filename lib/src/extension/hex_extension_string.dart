@@ -7,7 +7,8 @@ extension HexExtension on String {
   }
 
   String operator &(String aux) {
-    return (int.parse(this, radix: 16) & int.parse(this, radix: 16))
-        .toRadixString(16);
+    return (int.parse(this, radix: 16) & int.parse(aux, radix: 16))
+        .toRadixString(16)
+        .padLeft(length > aux.length ? length : aux.length, '0');
   }
 }

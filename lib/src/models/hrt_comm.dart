@@ -4,11 +4,10 @@ import 'package:hrtvirtual/src/extension/hex_extension_string.dart';
 
 class HrtComm {
   String? port;
+  void Function(String)? funcRead;
   final _commSerial = CommSerial();
-  HrtComm([this.port, void Function(String)? dataFunc]) {
-    if (port != null) {
-      connect(port!, dataFunc);
-    }
+  HrtComm([this.port, this.funcRead]) {
+    connect(port, funcRead);
   }
 
   List<String> get availablePorts => _commSerial.availablePorts;
@@ -27,27 +26,33 @@ class HrtComm {
     return _commSerial.writeSerial(Uint8List.fromList(resp));
   }
 
-  void connect([
+  bool connect([
     String? port,
-    void Function(String)? dataFunc,
+    void Function(String)? funcRead,
   ]) {
-    _commSerial.openSerial(port ?? (this.port ?? availablePorts[0]),
-        baudRate: 19200, bytesize: 8, parity: 0, stopbits: 1);
-    if (dataFunc != null) {
-      _commSerial.listenReader(
-        (data) {
-          dataFunc(
-            data
-                .map((e) => e.toRadixString(16).padLeft(2, '0'))
-                .join()
-                .toUpperCase(),
-          );
-        },
-      );
-    }
+    final funcReadAux = funcRead ?? this.funcRead;
+    return (port ?? this.port) != null
+        ? _commSerial.openSerial(
+            port ?? this.port!,
+            baudRate: 19200,
+            bytesize: 8,
+            parity: 0,
+            stopbits: 1,
+            funcRead: funcReadAux != null
+                ? (data) {
+                    funcReadAux(
+                      data
+                          .map((e) => e.toRadixString(16).padLeft(2, '0'))
+                          .join()
+                          .toUpperCase(),
+                    );
+                  }
+                : null,
+          )
+        : false;
   }
 
-  void disconnect() {
-    _commSerial.closeSerial();
+  bool disconnect() {
+    return _commSerial.closeSerial();
   }
 }

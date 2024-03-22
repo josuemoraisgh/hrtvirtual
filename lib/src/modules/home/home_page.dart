@@ -106,7 +106,19 @@ class _HomePageState extends State<HomePage> {
                         groupValue: controller.connectNotifier,
                         onChanged: (e) {
                           if (e == 'CONNECTED') {
-                            controller.hrtComm.connect();
+                            controller.textController.text = "";
+                            controller.hrtComm.funcRead =
+                                controller.readHrtFrame;
+                            if (!controller.hrtComm.connect()) {
+                              Future.delayed(const Duration(milliseconds: 500))
+                                  .then(
+                                (value) {
+                                  controller.connectNotifier.value =
+                                      "DISCONNECTED";
+                                  setState(() {});
+                                },
+                              );
+                            }
                           } else {
                             controller.hrtComm.disconnect();
                           }

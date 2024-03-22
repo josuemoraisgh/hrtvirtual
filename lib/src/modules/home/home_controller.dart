@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:hrtvirtual/src/extension/hex_extension_string.dart';
 import 'package:hrtvirtual/src/models/hrt_comm.dart';
-import 'package:hrtvirtual/src/models/hrt_send.dart';
+import 'package:hrtvirtual/src/models/hrt_build.dart';
 import 'package:hrtvirtual/src/models/hrt_frame.dart';
 import 'package:hrtvirtual/src/models/hrt_storage.dart';
 
@@ -13,37 +14,33 @@ class HomeController {
   final hrtStorage = HrtStorage();
   final textController = TextEditingController();
   final commandController = TextEditingController();
-  final valueChanged = ValueNotifier<(String, String)>(("", "")); // NAME, VALUE
 
-  Future init() async {
-    valueChanged.addListener(() {
-      hrtStorage.setVariable(valueChanged.value.$1, valueChanged.value.$2);
-    });
+  void readHrtFrame(String data) {
+    final hrtResponse = HrtFrame(data);
+    textController.text += '${hrtResponse.frame.splitByLength(2).join(" ")}\n';
   }
 
-  void masterMode(String commandWrite) {
-    hrtStorage.setVariable('master_address','01');
+  void masterMode(String commandWrite) async {
+    hrtStorage.setVariable('master_address', '01'); //Seta para primario master
+    hrtStorage.setVariable('frame_type', "02"); //Do master para o device
     final hrtFrameRead = HrtFrame()..command = commandWrite;
     if (hrtFrameRead.log.isEmpty) {
-      final hrtRequest = HrtSend(hrtStorage, hrtFrameRead);
-      hrtComm.writeFrame(hrtRequest.frame);
-      Future.delayed(const Duration(seconds: 1)).then(
-        (value) {
-          final hrtResponse = HrtFrame(hrtComm.readFrame());
-          textController.text +=
-              '${hrtRequest.frame} -> ${hrtResponse.frame}\n';
-        },
-      );
+      final hrtRequest = HrtBuild(hrtStorage, hrtFrameRead);
+      final valueAux = await hrtRequest.frame;
+      hrtComm.writeFrame(valueAux);
+      textController.text += '${valueAux.splitByLength(2).join(" ")} -> ';
     }
   }
 
-  void slaveMode(String frameRead) {
-    hrtStorage.setVariable('master_address','00');    
+  void slaveMode(String frameRead) async {
+    hrtStorage.setVariable('master_address', '00'); //quando Slave deve ser 0
+    hrtStorage.setVariable('frame_type', "06"); //Do device para o master
     final hrtFrameRead = HrtFrame(frameRead);
     if (hrtFrameRead.log.isEmpty) {
-      final hrtResponse = HrtSend(hrtStorage, hrtFrameRead);
-      textController.text += '${hrtFrameRead.frame} -> ${hrtResponse.frame}\n';
-      hrtComm.writeFrame(hrtResponse.frame);
+      final hrtResponse = HrtBuild(hrtStorage, hrtFrameRead);
+      textController.text +=
+          '${hrtFrameRead.frame.splitByLength(2).join(" ")} -> ${(await hrtResponse.frame).splitByLength(2).join(" ")}\n';
+      hrtComm.writeFrame(await hrtResponse.frame);
     }
   }
 }
