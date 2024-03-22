@@ -48,7 +48,7 @@ class CommSerial extends Disposable {
     _sp!.openReadWrite();
     if (_sp!.isOpen) {
       if (funcRead != null) {
-        _reader = SerialPortReader(_sp!, timeout: 0);
+        _reader = SerialPortReader(_sp!);
         if (_reader != null) {
           _reader!.stream.listen(funcRead);
         }
@@ -72,7 +72,7 @@ class CommSerial extends Disposable {
   Uint8List readSerial() {
     if (_sp != null) {
       if (_sp!.isOpen) {
-        return _sp!.read(_sp!.bytesAvailable, timeout: 0);
+        return _sp!.read(_sp!.bytesAvailable);
       }
     }
     return Uint8List(0);

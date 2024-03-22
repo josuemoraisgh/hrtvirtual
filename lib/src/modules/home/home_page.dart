@@ -167,10 +167,10 @@ class _HomePageState extends State<HomePage> {
                         groupValue: controller.sendNotifier,
                         onChanged: controller.connectNotifier.value ==
                                 "CONNECTED"
-                            ? (e) {
-                                controller.masterMode(
+                            ? (e) async {
+                                await controller.masterMode(
                                     controller.commandController.text);
-                                Future.delayed(const Duration(seconds: 1)).then(
+                                await Future.delayed(const Duration(seconds: 1)).then(
                                   (value) {
                                     controller.sendNotifier.value =
                                         controller.sendNotifier.value == "SEND"

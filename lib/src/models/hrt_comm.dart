@@ -20,6 +20,8 @@ class HrtComm {
         .toUpperCase();
   }
 
+  bool get isConnected => _commSerial.isOpen;
+
   bool writeFrame(String data) {
     final resp =
         data.splitByLength(2).map((e) => int.parse(e, radix: 16)).toList();

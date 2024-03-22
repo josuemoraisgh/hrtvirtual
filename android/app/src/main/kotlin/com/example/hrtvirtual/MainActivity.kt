@@ -1,4 +1,4 @@
-package com.example.hctvirtual
+package com.example.hrtvirtual
 
 import io.flutter.embedding.android.FlutterActivity
 

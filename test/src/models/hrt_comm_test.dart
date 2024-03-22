@@ -11,7 +11,7 @@ void main() {
 
   test('Test 01', () async {
     final hrtComm0 = HrtComm();
-    final aux0 = hrtComm0.connect('COM4');
+    final aux0 = hrtComm0.connect('COM3');
     expect(aux0, true);
     expect(hrtComm0.writeFrame('FFFFFFFFFF0280000082'), true);
     await Future.delayed(const Duration(seconds: 2)).then((value) {

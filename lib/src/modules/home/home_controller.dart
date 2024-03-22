@@ -20,7 +20,7 @@ class HomeController {
     textController.text += '${hrtResponse.frame.splitByLength(2).join(" ")}\n';
   }
 
-  void masterMode(String commandWrite) async {
+  Future<void> masterMode(String commandWrite) async {
     hrtStorage.setVariable('master_address', '01'); //Seta para primario master
     hrtStorage.setVariable('frame_type', "02"); //Do master para o device
     final hrtFrameRead = HrtFrame()..command = commandWrite;
@@ -32,7 +32,7 @@ class HomeController {
     }
   }
 
-  void slaveMode(String frameRead) async {
+  Future<void> slaveMode(String frameRead) async {
     hrtStorage.setVariable('master_address', '00'); //quando Slave deve ser 0
     hrtStorage.setVariable('frame_type', "06"); //Do device para o master
     final hrtFrameRead = HrtFrame(frameRead);

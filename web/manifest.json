@@ -1,6 +1,6 @@
 {
-    "name": "hctvirtual",
-    "short_name": "hctvirtual",
+    "name": "hrtvirtual",
+    "short_name": "hrtvirtual",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
