@@ -15,6 +15,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_modular: ^6.3.2
   flutter_libserialport: ^0.4.0
+  #libserialport: 
+  #  path: libserialport-0.3.0+1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   expressions: ^0.2.5+1

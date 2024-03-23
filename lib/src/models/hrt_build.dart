@@ -1,44 +1,33 @@
-import 'dart:async';
-
 import 'package:hrtvirtual/src/models/hrt_frame.dart';
 import 'package:hrtvirtual/src/models/hrt_storage.dart';
 
 class HrtBuild {
   final _hrtFrameWrite = HrtFrame();
-  final HrtFrame _hrtFrameRead;
-  final HrtStorage _hrtStorage;
-  Completer<bool> completer = Completer<bool>();
-  HrtBuild(this._hrtStorage, this._hrtFrameRead) {
-    completer.complete(_init());
-  }
 
-  Future<String> get frame async {
-    await completer.future;
-    return _hrtFrameWrite.frame;
-  }
-
-  Future<bool> _init() async {
+  HrtBuild(final HrtStorage hrtStorage, final HrtFrame hrtFrameRead) {
     _hrtFrameWrite.addressType =
-        (await _hrtStorage.getVariable('address_type')) == "00" ? false : true;
-    _hrtFrameWrite.frameType = (await _hrtStorage.getVariable('frame_type'));
+        hrtStorage.getVariable('address_type') == "00" ? false : true;
+    _hrtFrameWrite.frameType = hrtStorage.getVariable('frame_type');
     _hrtFrameWrite.masterAddress =
-        (await _hrtStorage.getVariable('master_address')) == "00"
-            ? false
-            : true;
+        hrtStorage.getVariable('master_address') == "00" ? false : true;
     if (_hrtFrameWrite.addressType) {
-      _hrtFrameWrite.manufacterId =
-          await _hrtStorage.getVariable('manufacter_id');
-      _hrtFrameWrite.deviceType = await _hrtStorage.getVariable('device_type');
-      _hrtFrameWrite.deviceId = await _hrtStorage.getVariable('device_id');
+      _hrtFrameWrite.manufacterId = hrtStorage.getVariable('manufacter_id');
+      _hrtFrameWrite.deviceType = hrtStorage.getVariable('device_type');
+      _hrtFrameWrite.deviceId = hrtStorage.getVariable('device_id');
     } else {
-      _hrtFrameWrite.pollingAddress =
-          await _hrtStorage.getVariable('polling_address');
+      _hrtFrameWrite.pollingAddress = hrtStorage.getVariable('polling_address');
     }
-    return _hrtFrameWrite.frameType == "02" ? request() : response();
+    if (_hrtFrameWrite.frameType == "02") {
+      _request(hrtStorage, hrtFrameRead);
+    } else {
+      _response(hrtStorage, hrtFrameRead);
+    }
   }
 
-  Future<bool> request() async {
-    switch (_hrtFrameRead.command) {
+  String get frame => _hrtFrameWrite.frame;
+
+  void _request(final HrtStorage hrtStorage, final HrtFrame hrtFrameRead) {
+    switch (hrtFrameRead.command) {
       case '00': //Identity Command
         _hrtFrameWrite.body = "";
         break;
@@ -52,8 +41,8 @@ class HrtBuild {
         _hrtFrameWrite.body = "";
         break;
       case '06': //Write Polling Address
-        _hrtFrameWrite.body = "${_hrtStorage.getVariable('polling_address')}"
-            "${_hrtStorage.getVariable('loop_current_mode')}";
+        _hrtFrameWrite.body = "${hrtStorage.getVariable('polling_address')}"
+            "${hrtStorage.getVariable('loop_current_mode')}";
         break;
       case '07': //Read Loop Configuration
         _hrtFrameWrite.body = "";
@@ -65,7 +54,7 @@ class HrtBuild {
         _hrtFrameWrite.body = "";
         break;
       case '11': //Read Unique Identifier Associated With Tag
-        _hrtFrameWrite.body = await _hrtStorage.getVariable('tag');
+        _hrtFrameWrite.body = hrtStorage.getVariable('tag');
         break;
       case '0C': //Read Message (12)
         _hrtFrameWrite.body = "";
@@ -76,97 +65,95 @@ class HrtBuild {
       case '21': //Read Device Variables (33)
         _hrtFrameWrite.body = "";
     }
-    return true;
   }
 
-  Future<bool> response() async {
-    switch (_hrtFrameRead.command) {
+  void _response(final HrtStorage hrtStorage, final HrtFrame hrtFrameRead) {
+    switch (hrtFrameRead.command) {
       case '00': //Identity Command
         _hrtFrameWrite.body = "00" //error_code
             "FE"
-            "${await _hrtStorage.getVariable('master_address', 'manufacturer_id')}"
-            "${await _hrtStorage.getVariable('device_type')}"
-            "${await _hrtStorage.getVariable('request_preambles')}"
-            "${await _hrtStorage.getVariable('hart_revision')}"
-            "${await _hrtStorage.getVariable('software_revision')}"
-            "${await _hrtStorage.getVariable('transmitter_revision')}"
-            "${await _hrtStorage.getVariable('hardware_revision')}"
-            "${await _hrtStorage.getVariable('device_flags')}"
-            "${await _hrtStorage.getVariable('device_id')}";
+            "${hrtStorage.getVariable('master_address', 'manufacturer_id')}"
+            "${hrtStorage.getVariable('device_type')}"
+            "${hrtStorage.getVariable('request_preambles')}"
+            "${hrtStorage.getVariable('hart_revision')}"
+            "${hrtStorage.getVariable('software_revision')}"
+            "${hrtStorage.getVariable('transmitter_revision')}"
+            "${hrtStorage.getVariable('hardware_revision')}"
+            "${hrtStorage.getVariable('device_flags')}"
+            "${hrtStorage.getVariable('device_id')}";
         break;
       case '01': //Read Primary Variable
         _hrtFrameWrite.body = "00" //error_code
-            "${await _hrtStorage.getVariable('unit_code')}"
-            "${await _hrtStorage.getVariable('PROCESS_VARIABLE')}";
+            "${hrtStorage.getVariable('unit_code')}"
+            "${hrtStorage.getVariable('PROCESS_VARIABLE')}";
         break;
       case '02': //Read Loop Current And Percent Of Range
         _hrtFrameWrite.body = "00" //error_code
-            "${await _hrtStorage.getVariable('loop_current')}"
-            "${await _hrtStorage.getVariable('percent_of_range')}";
+            "${hrtStorage.getVariable('loop_current')}"
+            "${hrtStorage.getVariable('percent_of_range')}";
         break;
       case '03': //Read Dynamic Variables And Loop Current
         _hrtFrameWrite.body = "00" //error_code
-            "${await _hrtStorage.getVariable('loop_current')}"
-            "${await _hrtStorage.getVariable('unit_code')}"
-            "${await _hrtStorage.getVariable('PROCESS_VARIABLE')}"
-            "${await _hrtStorage.getVariable('unit_code')}"
-            "${await _hrtStorage.getVariable('PROCESS_VARIABLE')}"
-            "${await _hrtStorage.getVariable('unit_code')}"
-            "${await _hrtStorage.getVariable('PROCESS_VARIABLE')}"
-            "${await _hrtStorage.getVariable('unit_code')}"
-            "${await _hrtStorage.getVariable('PROCESS_VARIABLE')}";
+            "${hrtStorage.getVariable('loop_current')}"
+            "${hrtStorage.getVariable('unit_code')}"
+            "${hrtStorage.getVariable('PROCESS_VARIABLE')}"
+            "${hrtStorage.getVariable('unit_code')}"
+            "${hrtStorage.getVariable('PROCESS_VARIABLE')}"
+            "${hrtStorage.getVariable('unit_code')}"
+            "${hrtStorage.getVariable('PROCESS_VARIABLE')}"
+            "${hrtStorage.getVariable('unit_code')}"
+            "${hrtStorage.getVariable('PROCESS_VARIABLE')}";
         break;
       case '06': //Write Polling Address
-        final pollingAddress = _hrtFrameRead.body.substring(0, 2);
-        final loopCurrentMode = _hrtFrameRead.body.substring(2);
-        _hrtStorage.setVariable('polling_address', pollingAddress);
-        _hrtStorage.setVariable('loop_current_mode', loopCurrentMode);
+        final pollingAddress = hrtFrameRead.body.substring(0, 2);
+        final loopCurrentMode = hrtFrameRead.body.substring(2);
+        hrtStorage.setVariable('polling_address', pollingAddress);
+        hrtStorage.setVariable('loop_current_mode', loopCurrentMode);
         _hrtFrameWrite.body = "00" //error_code
             "$pollingAddress"
             "$loopCurrentMode";
         break;
       case '07': //Read Loop Configuration
         _hrtFrameWrite.body = "00" //error_code
-            "${await _hrtStorage.getVariable('polling_address')}"
-            "${await _hrtStorage.getVariable('loop_current_mode')}";
+            "${hrtStorage.getVariable('polling_address')}"
+            "${hrtStorage.getVariable('loop_current_mode')}";
         break;
       case '08': //Read Dynamic Variable Classifications
         _hrtFrameWrite.body = "00" //error_code
-            "${await _hrtStorage.getVariable('primary_variable_classification')}"
-            "${await _hrtStorage.getVariable('secondary_variable_classification')}"
-            "${await _hrtStorage.getVariable('tertiary_variable_classification')}"
-            "${await _hrtStorage.getVariable('quaternary_variable_classification')}";
+            "${hrtStorage.getVariable('primary_variable_classification')}"
+            "${hrtStorage.getVariable('secondary_variable_classification')}"
+            "${hrtStorage.getVariable('tertiary_variable_classification')}"
+            "${hrtStorage.getVariable('quaternary_variable_classification')}";
         break;
       case '09': //Read Device Variables with Status
         _hrtFrameWrite.body = "";
         break;
       case '11': //Read Unique Identifier Associated With Tag
         _hrtFrameWrite.body =
-            "${(_hrtFrameRead.body == await _hrtStorage.getVariable('tag')) ? '00' : '01'}" //error_code 00 - ok | 01 - undefined
+            "${(hrtFrameRead.body == hrtStorage.getVariable('tag')) ? '00' : '01'}" //error_code 00 - ok | 01 - undefined
             "FE"
-            "${await _hrtStorage.getVariable('master_slave', 'manufacturer_id')}"
-            "${await _hrtStorage.getVariable('device_type')}"
-            "${await _hrtStorage.getVariable('request_preambles')}"
-            "${await _hrtStorage.getVariable('hart_revision')}"
-            "${await _hrtStorage.getVariable('software_revision')}"
-            "${await _hrtStorage.getVariable('transmitter_revision')}"
-            "${await _hrtStorage.getVariable('hardware_revision')}"
-            "${await _hrtStorage.getVariable('device_flags')}"
-            "${await _hrtStorage.getVariable('device_id')}";
-
+            "${hrtStorage.getVariable('master_slave', 'manufacturer_id')}"
+            "${hrtStorage.getVariable('device_type')}"
+            "${hrtStorage.getVariable('request_preambles')}"
+            "${hrtStorage.getVariable('hart_revision')}"
+            "${hrtStorage.getVariable('software_revision')}"
+            "${hrtStorage.getVariable('transmitter_revision')}"
+            "${hrtStorage.getVariable('hardware_revision')}"
+            "${hrtStorage.getVariable('device_flags')}"
+            "${hrtStorage.getVariable('device_id')}";
         break;
       case '0C': //Read Message (12)
         _hrtFrameWrite.body = "00" //error_code
-            "${await _hrtStorage.getVariable('Message')}";
+            "${hrtStorage.getVariable('Message')}";
         break;
       case '0D': //Read Tag, Descriptor, Date (13)
         _hrtFrameWrite.body = "00" //error_code
-            "${await _hrtStorage.getVariable('tag')}"
-            "${await _hrtStorage.getVariable('descriptor')}"
-            "${await _hrtStorage.getVariable('date')}";
+            "${hrtStorage.getVariable('tag')}"
+            "${hrtStorage.getVariable('descriptor')}"
+            "${hrtStorage.getVariable('date')}";
         break;
       case '21': //Read Device Variables (33)
-        _hrtFrameWrite.body = switch (_hrtFrameRead.body) {
+        _hrtFrameWrite.body = switch (hrtFrameRead.body) {
           '00' => '08 00 00 00 27 40 EE 2D 42',
           '01' => '08 00 00 01 39 41 AC 26 AA',
           '02' => '08 00 00 02 20 41 CF 95 40',
@@ -178,6 +165,5 @@ class HrtBuild {
           _ => '08 00 00 00 00 7F A0 00 00',
         };
     }
-    return true;
   }
 }

@@ -3,11 +3,16 @@ import 'package:hrtvirtual/src/extension/comm_serial.dart';
 import 'package:hrtvirtual/src/extension/hex_extension_string.dart';
 
 class HrtComm {
-  String? port;
+  String? _port;
   void Function(String)? funcRead;
   final _commSerial = CommSerial();
-  HrtComm([this.port, this.funcRead]) {
-    connect(port, funcRead);
+  HrtComm([this._port, this.funcRead]) {
+    connect(_port, funcRead);
+  }
+
+  String get port => _port ?? "";
+  set port(String value) {
+    _port = value;
   }
 
   List<String> get availablePorts => _commSerial.availablePorts;
@@ -33,9 +38,9 @@ class HrtComm {
     void Function(String)? funcRead,
   ]) {
     final funcReadAux = funcRead ?? this.funcRead;
-    return (port ?? this.port) != null
+    return (port ?? _port) != null
         ? _commSerial.openSerial(
-            port ?? this.port!,
+            port ?? _port!,
             baudRate: 19200,
             bytesize: 8,
             parity: 0,

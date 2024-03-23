@@ -1,8 +1,8 @@
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 
-class CommSerial extends Disposable {
+class CommSerial {
   SerialPort? _sp;
   SerialPortReader? _reader;
 
@@ -29,31 +29,37 @@ class CommSerial extends Disposable {
       int? parity,
       int? stopbits,
       void Function(Uint8List)? funcRead}) {
-    if (_sp != null) if (_sp!.isOpen) _sp!.close();
-    _sp = SerialPort(port);
-    _sp!.config.setFlowControl(SerialPortFlowControl.xonXoff);
-    _sp!.config.xonXoff = SerialPortXonXoff.inOut;
-    if (baudRate != null) {
-      _sp!.config.baudRate = baudRate;
-    }
-    if (bytesize != null) {
-      _sp!.config.bits = bytesize;
-    }
-    if (parity != null) {
-      _sp!.config.parity = parity;
-    }
-    if (stopbits != null) {
-      _sp!.config.stopBits = stopbits;
-    }
-    _sp!.openReadWrite();
-    if (_sp!.isOpen) {
-      if (funcRead != null) {
-        _reader = SerialPortReader(_sp!);
-        if (_reader != null) {
-          _reader!.stream.listen(funcRead);
+    try {
+      if (_sp != null) if (_sp!.isOpen) _sp!.close();
+      _sp = SerialPort(port);
+      _sp!.config.setFlowControl(SerialPortFlowControl.xonXoff);
+      _sp!.config.xonXoff = SerialPortXonXoff.inOut;
+      if (baudRate != null) {
+        _sp!.config.baudRate = baudRate;
+      }
+      if (bytesize != null) {
+        _sp!.config.bits = bytesize;
+      }
+      if (parity != null) {
+        _sp!.config.parity = parity;
+      }
+      if (stopbits != null) {
+        _sp!.config.stopBits = stopbits;
+      }
+      _sp!.openReadWrite();
+      if (_sp!.isOpen) {
+        if (funcRead != null) {
+          _reader = SerialPortReader(_sp!);
+          if (_reader != null) {
+            _reader!.stream.listen(funcRead);
+          }
         }
       }
       return true;
+    } on SerialPortError catch (err, _) {
+      if (kDebugMode) {
+        print(SerialPort.lastError);
+      }
     }
     return false;
   }
@@ -83,16 +89,17 @@ class CommSerial extends Disposable {
     if (_sp != null) {
       if (_sp!.isOpen) {
         if (write.isNotEmpty) {
-          tam = _sp!.write(write);
+          try {
+            tam = _sp!.write(write, timeout: 0);
+          } on SerialPortError catch (err, _) {
+            if (kDebugMode) {
+              print(SerialPort.lastError);
+            }
+          }
         }
         if (tam >= write.length) return true;
       }
     }
     return false;
-  }
-
-  @override
-  void dispose() {
-    closeSerial();
   }
 }
