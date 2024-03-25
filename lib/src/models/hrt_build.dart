@@ -5,6 +5,7 @@ class HrtBuild {
   final _hrtFrameWrite = HrtFrame();
 
   HrtBuild(final HrtStorage hrtStorage, final HrtFrame hrtFrameRead) {
+    _hrtFrameWrite.command = hrtFrameRead.command;
     _hrtFrameWrite.addressType =
         hrtStorage.getVariable('address_type') == "00" ? false : true;
     _hrtFrameWrite.frameType = hrtStorage.getVariable('frame_type');

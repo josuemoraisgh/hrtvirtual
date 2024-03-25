@@ -34,13 +34,14 @@ class HomeController extends Disposable {
   bool masterMode(String commandWrite) {
     hrtStorage.setVariable('master_address', '01'); //Seta para primario master
     hrtStorage.setVariable('frame_type', "02"); //Do master para o device
-    final hrtFrameRead = HrtFrame()..command = commandWrite;
+    final hrtFrameRead = HrtFrame()
+      ..command = commandWrite == "" ? "00" : commandWrite;
     if (hrtFrameRead.log.isEmpty) {
       final hrtRequest = HrtBuild(hrtStorage, hrtFrameRead);
       final valueAux = hrtRequest.frame;
       hrtComm.writeFrame(valueAux);
       final aux = '${valueAux.splitByLength(2).join(" ")} -> ';
-      textController.text += aux;
+      textController.text = aux;
       if (kDebugMode) {
         print(aux);
       }
