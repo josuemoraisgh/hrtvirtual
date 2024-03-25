@@ -9,7 +9,7 @@ import 'package:hrtvirtual/src/models/hrt_frame.dart';
 import 'package:hrtvirtual/src/models/hrt_storage.dart';
 
 class HomeController extends Disposable {
-  final hrtComm = HrtComm();
+  late final HrtComm hrtComm;
   final connectNotifier = ValueNotifier<String>("");
   final sendNotifier = ValueNotifier<String>("");
   final hrtFrameWrite = HrtFrame();
@@ -18,13 +18,13 @@ class HomeController extends Disposable {
   final commandController = TextEditingController();
   final completer = Completer<bool>();
 
-  HomeController() {
+  HomeController(this.hrtComm) {
     completer.complete(hrtStorage.init());
   }
 
   void readHrtFrame(String data) {
     final hrtResponse = HrtFrame(data);
-    final aux = '${hrtResponse.frame.splitByLength(2).join(" ")}\n';
+    final aux = hrtResponse.frame.splitByLength(2).join(" ");
     textController.text += aux;
     if (kDebugMode) {
       print(aux);

@@ -28,9 +28,10 @@ class HrtComm {
   bool get isConnected => _commSerial.isOpen;
 
   bool writeFrame(String data) {
-    final resp =
+    List<int> aux = 
         data.splitByLength(2).map((e) => int.parse(e, radix: 16)).toList();
-    return _commSerial.writeSerial(Uint8List.fromList(resp));
+    Uint8List resp = Uint8List.fromList(aux);
+    return _commSerial.writeSerial(resp);
   }
 
   bool connect([

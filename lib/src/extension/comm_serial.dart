@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_libserialport/flutter_libserialport.dart';
 
@@ -32,29 +31,29 @@ class CommSerial {
     try {
       if (_sp != null) if (_sp!.isOpen) _sp!.close();
       _sp = SerialPort(port);
-      _sp!.config.setFlowControl(SerialPortFlowControl.xonXoff);
-      _sp!.config.xonXoff = SerialPortXonXoff.inOut;
-      if (baudRate != null) {
-        _sp!.config.baudRate = baudRate;
-      }
-      if (bytesize != null) {
-        _sp!.config.bits = bytesize;
-      }
-      if (parity != null) {
-        _sp!.config.parity = parity;
-      }
-      if (stopbits != null) {
-        _sp!.config.stopBits = stopbits;
-      }
-      _sp!.openReadWrite();
-      if (_sp!.isOpen) {
-        if (funcRead != null) {
-          _reader = SerialPortReader(_sp!);
-          if (_reader != null) {
-            _reader!.stream.listen(funcRead);
-          }
+      if (funcRead != null) {
+        _reader = SerialPortReader(_sp!);
+        if (_reader != null) {
+          _reader!.stream.listen(funcRead);
         }
       }
+      _sp!.openReadWrite();
+      SerialPortConfig config = _sp!.config;
+      config.setFlowControl(SerialPortFlowControl.xonXoff);
+      config.xonXoff = SerialPortXonXoff.inOut;
+      if (baudRate != null) {
+        config.baudRate = baudRate;
+      }
+      if (bytesize != null) {
+        config.bits = bytesize;
+      }
+      if (parity != null) {
+        config.parity = parity;
+      }
+      if (stopbits != null) {
+        config.stopBits = stopbits;
+      }
+      _sp!.config = config;
       return true;
     } on SerialPortError catch (err, _) {
       if (kDebugMode) {

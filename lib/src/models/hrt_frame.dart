@@ -13,7 +13,7 @@ class HrtFrame {
   String preamble = "FFFFFFFFFF";
   bool addressType = false;
   String frameType = "02";
-  bool masterAddress = true; // 1 - primary master; 0 - secondary master
+  bool masterAddress = false; // 1 - primary master; 0 - secondary master
   bool burstMode = false; // 1 - in Burst Mode; 0 - not Burst Mode or Slave
   String _manufacterId = "00";
   String _deviceType = "00";
@@ -30,11 +30,9 @@ class HrtFrame {
     }
   }
 
-  String calcCheckSum() {
-    final listFrame =
-        (delimiter + address + command + _nBBody.toRadixString(16) + _body)
-            .splitByLength(2);
-    return listFrame
+  String calcCheckSum(String ck) {
+    return ck
+        .splitByLength(2)
         .reduce((value, element) =>
             (int.parse(value, radix: 16) ^ int.parse(element, radix: 16))
                 .toRadixString(16))
@@ -43,20 +41,21 @@ class HrtFrame {
   }
 
   String get frame {
-    String resp = "";
     try {
       log = "";
-      resp = preamble +
-          delimiter +
-          address +
-          command +
-          _nBBody.toRadixString(16).toUpperCase().padLeft(2, '0') +
-          _body +
-          calcCheckSum();
+      final aux = _pacialFrame();
+      final ck = calcCheckSum(aux);
+      return '$preamble$aux$ck';
     } catch (e) {
       log = "Incorrect Value form Frame";
     }
-    return resp;
+    return "";
+  }
+
+  String _pacialFrame() {
+    return "$delimiter$address$command"
+        "${_nBBody.toRadixString(16).toUpperCase().padLeft(2, '0')}"
+        "$_body";
   }
 
   set frame(String hrtFrame) {
@@ -111,7 +110,7 @@ class HrtFrame {
       ////////////////// CheckSum ////////////////////////
       //Extrai o CheckSum e checa se ele esta correto.
       checkSum = strFrame.substring(strFrame.length - 2);
-      if (calcCheckSum() != checkSum) {
+      if (calcCheckSum(_pacialFrame()) != checkSum) {
         log = "Incorrect CheckSum";
       }
     } catch (e) {
@@ -146,17 +145,7 @@ class HrtFrame {
 
   //Alterando o adress tem que alterar: _masterAddress, _burstMode, _pollingAddress, manufacterId, deviceType, deviceId
   String get address =>
-      0
-          .setBits(7, 1, masterAddress ? 1 : 0)
-          .setBits(6, 1, burstMode ? 1 : 0)
-          .setBits(
-              0,
-              6,
-              int.parse(addressType == false ? _pollingAddress : manufacterId,
-                  radix: 16))
-          .toRadixString(16)
-          .padLeft(2, '0') +
-      (addressType ? (_deviceType + _deviceId) : "");
+      '${0.setBits(7, 1, masterAddress ? 1 : 0).setBits(6, 1, burstMode ? 1 : 0).setBits(0, 6, int.parse(addressType == false ? pollingAddress : manufacterId, radix: 16)).toRadixString(16).padLeft(2, '0')}${(addressType ? '$_deviceType$_deviceId' : "")}';
   set address(String newAddress) {
     final id = newAddress.substring(0, 2);
     final valueAux = int.parse(id, radix: 16);
