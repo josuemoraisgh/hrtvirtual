@@ -42,9 +42,9 @@ class HrtComm {
     return (port ?? _port) != null
         ? _commSerial.openSerial(
             port ?? _port!,
-            baudRate: 19200,
+            baudRate: 1200,
             bytesize: 8,
-            parity: 0,
+            parity: 1,
             stopbits: 1,
             funcRead: funcReadAux != null
                 ? (data) {

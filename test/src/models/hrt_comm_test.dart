@@ -51,7 +51,7 @@ void main() {
     Map<String, double> context = {};
     for (var e in matches) {
       if (e.group(0) != null) {
-        final variableHex = await hrtStorage.getVariable(e.group(0)!);
+        final variableHex = hrtStorage.getVariable(e.group(0)!);
         context[e.group(0)!] =
             hrtTypeHexTo(variableHex, hrtSettings[e.group(0)!]!.$2);
       }

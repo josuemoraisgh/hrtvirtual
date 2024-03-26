@@ -5,6 +5,7 @@ class CommSerial {
   SerialPort? _sp;
   SerialPortReader? _reader;
 
+
   List<String> get availablePorts => SerialPort.availablePorts;
 
   bool get isOpen => _sp!.isOpen;
@@ -39,8 +40,10 @@ class CommSerial {
       }
       _sp!.openReadWrite();
       SerialPortConfig config = _sp!.config;
-      config.setFlowControl(SerialPortFlowControl.xonXoff);
-      config.xonXoff = SerialPortXonXoff.inOut;
+      //config.setFlowControl(SerialPortFlowControl.rtsCts);
+      //config.cts = SerialPortCts.flowControl;
+      //config.rts = SerialPortRts.flowControl;
+      //config.xonXoff = SerialPortXonXoff.inOut;      
       if (baudRate != null) {
         config.baudRate = baudRate;
       }
