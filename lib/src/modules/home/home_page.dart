@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          final double tam = typeSpace(constraints.maxWidth);
+          //final double tam = typeSpace();
           return FutureBuilder<bool>(
             future: controller.completer.future,
             initialData: false,
@@ -40,8 +40,8 @@ class _HomePageState extends State<HomePage> {
                     false
                 ? const Center(child: CircularProgressIndicator())
                 : Container(
-                    padding: EdgeInsets.only(
-                        left: tam, top: 10, right: tam, bottom: 10),
+                    padding: const EdgeInsets.only(
+                        left: 10, top: 10, right: 10, bottom: 10),
                     width: constraints.maxWidth,
                     color: Colors.white,
                     //child: SingleChildScrollView(
@@ -156,9 +156,35 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              SizedBox(
+                                width: 140,
+                                child: RadioListTile<String>(
+                                  title: const Text('Master'),
+                                  value: '01',
+                                  groupValue: controller.masterSlave,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      controller.masterSlave = value!;
+                                    });
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 130,
+                                child: RadioListTile<String>(
+                                  title: const Text('Slave'),
+                                  value: '00',
+                                  groupValue: controller.masterSlave,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      controller.masterSlave = value!;
+                                    });
+                                  },
+                                ),
+                              ),
                               const Text("Command: "),
                               SizedBox(
-                                width: 100, //
+                                width: 80, //
                                 height: 35,
                                 child: TextField(
                                   textAlign: TextAlign.justify,
@@ -178,7 +204,7 @@ class _HomePageState extends State<HomePage> {
                                 onChanged: controller.connectNotifier.value ==
                                         "CONNECTED"
                                     ? (e) async {
-                                        await controller.masterMode(
+                                        controller.masterMode(
                                             controller.commandController.text);
                                         await Future.delayed(
                                                 const Duration(seconds: 1))

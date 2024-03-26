@@ -37,6 +37,7 @@ const Map<String, (int, String, String)> hrtSettings = {
     'FLOAT',
     '@100 * (PROCESS_VARIABLE - lower_range_value) / (upper_range_value - lower_range_value)'
   ),
+  'loop_current_mode':(1, 'ENUM00', '00'),
   'loop_current': (4, 'FLOAT', '@(percent_of_range*0.16)+4'),
   'write_protect': (1, 'ENUM00', '00'),
   'private_label_distributor': (1, 'ENUM00', '00'),

@@ -57,7 +57,8 @@ class CustomButton extends StatelessWidget {
                   : title,
               style: TextStyle(
                 fontSize: 18,
-                color: initialValue == groupValueNotifier
+                color: initialValue == groupValueNotifier ||
+                      groupValueNotifier == ""
                     ? Colors.white
                     : Colors.black87,
               ),
