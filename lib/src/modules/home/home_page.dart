@@ -155,34 +155,6 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              SizedBox(
-                                width: 140,
-                                child: RadioListTile<String>(
-                                  contentPadding: const EdgeInsets.all(0),
-                                  title: const Text('Master'),
-                                  value: '01',
-                                  groupValue: controller.masterSlave,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      controller.masterSlave = value!;
-                                    });
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                width: 130,
-                                child: RadioListTile<String>(
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 0.0),
-                                  title: const Text('Slave'),
-                                  value: '00',
-                                  groupValue: controller.masterSlave,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      controller.masterSlave = value!;
-                                    });
-                                  },
-                                ),
-                              ),
                               const Text("Command: "),
                               SizedBox(
                                 width: 80, //
