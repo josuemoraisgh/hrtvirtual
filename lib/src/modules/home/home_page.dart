@@ -73,9 +73,9 @@ class _HomePageState extends State<HomePage> {
                                   underline: Container(),
                                   iconEnabledColor: Colors.black,
                                   dropdownColor:
-                                      Theme.of(context).colorScheme.background,
+                                      Theme.of(context).colorScheme.surface,
                                   focusColor:
-                                      Theme.of(context).colorScheme.background,
+                                      Theme.of(context).colorScheme.surface,
                                   selectedItemBuilder: (BuildContext context) {
                                     return controller.hrtComm.availablePorts
                                         .map((String value) {

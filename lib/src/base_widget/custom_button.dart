@@ -28,10 +28,10 @@ class CustomButton extends StatelessWidget {
             style: ButtonStyle(
               backgroundColor: initialValue == groupValueNotifier ||
                       groupValueNotifier == ""
-                  ? MaterialStateProperty.all<Color>(color ?? Colors.black54)
-                  : MaterialStateProperty.all<Color>(Colors.white),
-              elevation: MaterialStateProperty.all(8),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  ? WidgetStateProperty.all<Color>(color ?? Colors.black54)
+                  : WidgetStateProperty.all<Color>(Colors.white),
+              elevation: WidgetStateProperty.all(8),
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
                   side: BorderSide(width: 0.2, color: color ?? Colors.black54),
